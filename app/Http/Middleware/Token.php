@@ -17,16 +17,16 @@ class Token
     public function handle($request, Closure $next)
     {
         $curl = new Curl();
-
-        $curl->post('http://service-jbap.test/tes.php', array(
+        // $curl->setHeader('token', env('API_TES'));
+        $curl->get('http://api.dzc.my.id/token', array(
             'token' => env('API_TES'),
 
         ));
-        $res = json_decode($curl->response, true);
+        $res = $curl->response;
 
-        if ($res['result'] == false) {
-            $res['error'] = array(array('code' => 401, 'message' => 'Token  invalid'));
-            return response($res, 401);
+        if ($res->result == false) {
+            $res = array('code' => 401, 'message' => 'Token  invalid', 'server Reply' => $res->msg);
+            return response()->json($res, 401);
         }
 
         return $next($request);
