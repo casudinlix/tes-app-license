@@ -12,14 +12,14 @@ class getapi extends Command
      *
      * @var string
      */
-    protected $signature = 'get:token';
+    protected $signature = 'get:token {app_type} {app_name} {app_domain} {app_ip_server}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'For Get API token';
+    protected $description = 'For Get API token sample: get:token app_name app_domain app_ip_server';
 
     /**
      * Create a new command instance.
@@ -38,21 +38,25 @@ class getapi extends Command
      */
     public function handle()
     {
+
+
         $curl = new Curl();
-        $curl->post('http://service-jbap.test/tes.php', array(
-            'app_type' => 'WEB',
-            'app_name' => 'TEST',
-            'app_domain' => "xx.domain",
-            'app_ip_server' => '127.0.0.1',
+        $curl->post('http://api.dzc.my.id/client', array(
+            'app_type' =>  $this->argument('app_type'),
+            'app_name' =>  $this->argument('app_name'),
+            'app_domain' =>  $this->argument('app_domain'),
+            'app_ip_server' =>  $this->argument('app_ip_server'),
         ));
 
         if ($curl->error) {
             echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
             die;
         } else {
-
-            $key = $curl->response;
         }
+        $res =  $curl->response;
+
+        # code...
+        $key = $res->msg;
 
         if (file_exists($envFilePath = $this->getPathToEnvFile()) === false) {
             $this->info("Could not find env file! Key: $key");
